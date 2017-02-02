@@ -6,11 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dfe5556-2227-4416-8db6-64d7208fc34e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/module4/EarthquakeCityMap.class" afterPath="$PROJECT_DIR$/build/module4/EarthquakeCityMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/module4/EarthquakeMarker.class" afterPath="$PROJECT_DIR$/build/module4/EarthquakeMarker.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/module4/EarthquakeCityMap.java" afterPath="$PROJECT_DIR$/src/module4/EarthquakeCityMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/module4/EarthquakeMarker.java" afterPath="$PROJECT_DIR$/src/module4/EarthquakeMarker.java" />
     </list>
     <ignored path="$PROJECT_DIR$/build/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -908,12 +904,12 @@
       <workItem from="1485927181405" duration="302000" />
       <workItem from="1485928275911" duration="535000" />
       <workItem from="1486004507042" duration="10029000" />
-      <workItem from="1486030975919" duration="78000" />
+      <workItem from="1486030975919" duration="445000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46687000" />
+    <option name="totallyTimeSpent" value="47054000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1431" y="24" width="1855" height="1056" extended-state="6" />

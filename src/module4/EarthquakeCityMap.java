@@ -161,8 +161,8 @@ public class EarthquakeCityMap extends PApplet {
         text("5.0+ Magnitude", 75, 125);
         text("4.0+ Magnitude", 75, 175);
         text("Below 4.0", 75, 225);
-        text("City Marker",75,275);
-        text("Happened in Past Day",75,325);
+        text("City Marker", 75, 275);
+        text("Happened in Past Day", 75, 325);
     }
 
     public void keyPressed() {
@@ -180,9 +180,11 @@ public class EarthquakeCityMap extends PApplet {
         // IMPLEMENT THIS: loop over all countries to check if location is in any of them
 
         // TODO: Implement this method using the helper method isInCountry
-        for (Marker country : countryMarkers)
-            if (isInCountry(earthquake, country))
+        for (Marker country : countryMarkers) {
+            if (isInCountry(earthquake, country)) {
                 return true;
+            }
+        }
 
         return false;
 
