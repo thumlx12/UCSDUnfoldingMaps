@@ -138,7 +138,7 @@ public class EarthquakeCityMap extends PApplet {
     private void addKey() {
         // Remember you can use Processing's graphics methods here
         fill(255, 250, 240);
-        rect(25, 50, 150, 250);
+        rect(15, 50, 200, 300);
 
         fill(0);
         textAlign(LEFT, CENTER);
@@ -151,11 +151,18 @@ public class EarthquakeCityMap extends PApplet {
         ellipse(50, 175, 10, 10);
         fill(color(0, 0, 255));
         ellipse(50, 225, 5, 5);
+        fill(color(160, 24, 49));
+        triangle(50 - 7 * 0.866f, 275 + 7 * 0.5f, 50, 275 - 7, 50 + 7 * 0.866f, 275 + 7 * 0.5f);
+        fill(91, 89, 90);
+        line(50 - 0.707f * 6, 325 - 0.707f * 6, 50 + 0.707f * 6, 325 + 0.707f * 6);
+        line(50 + 0.707f * 6, 325 - 0.707f * 6, 50 - 0.707f * 6, 325 + 0.707f * 6);
 
         fill(0, 0, 0);
         text("5.0+ Magnitude", 75, 125);
         text("4.0+ Magnitude", 75, 175);
         text("Below 4.0", 75, 225);
+        text("City Marker",75,275);
+        text("Happened in Past Day",75,325);
     }
 
     public void keyPressed() {

@@ -101,12 +101,12 @@ public abstract class EarthquakeMarker extends SimplePointMarker {
     private void colorDetermine(PGraphics pg) {
         //TODO: Implement this method
         if (this.magnitude < 4.0) {
-            pg.fill(72, 66, 244);
+            pg.fill(0, 0, 255);
         } else {
             if (this.magnitude <= 4.9) {
-                pg.fill(223, 244, 66);
+                pg.fill(255, 255, 0);
             } else {
-                pg.fill(209, 6, 6);
+                pg.fill(255, 0, 0);
             }
         }
     }
