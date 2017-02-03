@@ -1,7 +1,9 @@
 package module4;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
@@ -18,6 +20,7 @@ import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 /**
  * EarthquakeCityMap
@@ -49,6 +52,7 @@ public class EarthquakeCityMap extends PApplet {
 
     //feed with magnitude 2.5+ Earthquakes
     private String earthquakesURL = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.atom";
+    //private String earthquakesURL = "test2.atom";
 
     // The files containing city names and info and country names and info
     private String cityFile = "city-data.json";
@@ -65,6 +69,9 @@ public class EarthquakeCityMap extends PApplet {
     // A List of country markers
     private List<Marker> countryMarkers;
 
+    private List<PointFeature> earthquakes;
+
+
     public void setup() {
         // (1) Initializing canvas and map tiles
         size(1500, 768, OPENGL);
@@ -77,6 +84,7 @@ public class EarthquakeCityMap extends PApplet {
             //earthquakesURL = "2.5_week.atom";
         }
         MapUtils.createDefaultEventDispatcher(this, map);
+        map.zoomAndPanTo(2, new Location(33.424360f, -14.577995f));
 
         // FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
         // one of the lines below.  This will work whether you are online or offline
@@ -100,7 +108,7 @@ public class EarthquakeCityMap extends PApplet {
         }
 
         //     STEP 3: read in earthquake RSS feed
-        List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
+        earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
         quakeMarkers = new ArrayList<Marker>();
 
         for (PointFeature feature : earthquakes) {
@@ -138,31 +146,42 @@ public class EarthquakeCityMap extends PApplet {
     private void addKey() {
         // Remember you can use Processing's graphics methods here
         fill(255, 250, 240);
-        rect(15, 50, 200, 300);
+        rect(10, 50, 200, 300);
 
         fill(0);
         textAlign(LEFT, CENTER);
-        textSize(12);
+        textSize(15);
         text("Earthquake Key", 50, 75);
+        textSize(12);
+        fill(color(160, 24, 49));
+        triangle(50 - 7 * 0.866f, 105 + 7 * 0.5f, 50, 105 - 7, 50 + 7 * 0.866f, 105 + 7 * 0.5f);
+        fill(color(255, 255, 255));
+        ellipse(50, 135, 10, 10);
+        rect(45, 160, 10, 10);
 
         fill(color(255, 0, 0));
-        ellipse(50, 125, 15, 15);
+        ellipse(50, 225, 10, 10);
         fill(color(255, 255, 0));
-        ellipse(50, 175, 10, 10);
+        ellipse(50, 255, 10, 10);
         fill(color(0, 0, 255));
-        ellipse(50, 225, 5, 5);
-        fill(color(160, 24, 49));
-        triangle(50 - 7 * 0.866f, 275 + 7 * 0.5f, 50, 275 - 7, 50 + 7 * 0.866f, 275 + 7 * 0.5f);
+        ellipse(50, 285, 10, 10);
+
+        fill(color(255, 255, 255));
+        ellipse(50, 315, 10, 10);
         fill(91, 89, 90);
-        line(50 - 0.707f * 6, 325 - 0.707f * 6, 50 + 0.707f * 6, 325 + 0.707f * 6);
-        line(50 + 0.707f * 6, 325 - 0.707f * 6, 50 - 0.707f * 6, 325 + 0.707f * 6);
+        line(50 - 0.707f * 5, 315 - 0.707f * 5, 50 + 0.707f * 5, 315 + 0.707f * 5);
+        line(50 + 0.707f * 5, 315 - 0.707f * 5, 50 - 0.707f * 5, 315 + 0.707f * 5);
 
         fill(0, 0, 0);
-        text("5.0+ Magnitude", 75, 125);
-        text("4.0+ Magnitude", 75, 175);
-        text("Below 4.0", 75, 225);
-        text("City Marker", 75, 275);
-        text("Happened in Past Day", 75, 325);
+        text("City Marker", 75, 105);
+        text("Land Quake", 75, 135);
+        text("Ocean Quake", 75, 165);
+        text("Size ~ Magnitude", 50, 195);
+
+        text("Deep", 75, 225);
+        text("Intermediate ", 75, 255);
+        text("Shallow", 75, 285);
+        text("Happened in Past Day", 75, 315);
     }
 
     public void keyPressed() {
@@ -200,6 +219,28 @@ public class EarthquakeCityMap extends PApplet {
     // And LandQuakeMarkers have a "country" property set.
     private void printQuakes() {
         // TODO: Implement this method
+        Map<String, Integer> quake_times_map = new HashMap<String, Integer>();
+        int OceanTimes = 0;
+        for (PointFeature earthquake : earthquakes) {
+            if (earthquake.getProperty("country") == null) {
+                OceanTimes += 1;
+            } else {
+                String country_name = earthquake.getProperty("country").toString();
+                if (!quake_times_map.containsKey(country_name)) {
+                    quake_times_map.put(country_name, 1);
+                } else {
+                    int QuakeTimes = quake_times_map.get(country_name) + 1;
+                    quake_times_map.put(country_name, QuakeTimes);
+                }
+            }
+        }
+        for (String country : quake_times_map.keySet()) {
+            System.out.println(country + ":\t" + quake_times_map.get(country));
+        }
+
+        System.out.println("OCEAN QUAKES:\t" + OceanTimes);
+
+
     }
 
 

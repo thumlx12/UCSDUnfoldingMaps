@@ -14,6 +14,9 @@ public abstract class EarthquakeMarker extends SimplePointMarker {
 
     private boolean isPastDay;
     private float magnitude;
+    private float depth;
+    private float pixel_cor_x;
+    private float pixel_cor_y;
 
     // Did the earthquake occur on land?  This will be set by the subclasses.
     protected boolean isOnLand;
@@ -57,10 +60,11 @@ public abstract class EarthquakeMarker extends SimplePointMarker {
         super(feature.getLocation());
         // Add a radius property and then set the properties
         java.util.HashMap<String, Object> properties = feature.getProperties();
+        this.depth = Float.parseFloat(properties.get("depth").toString());
         this.magnitude = Float.parseFloat(properties.get("magnitude").toString());
+        this.radius = 1.75f * this.magnitude;
         properties.put("radius", 2 * magnitude);
         setProperties(properties);
-        this.radius = 1.75f * this.magnitude;
         String age = properties.get("age").toString();
         if (age.equals("Past Day") || age.equals("Past Hour")) {
             this.isPastDay = true;
@@ -92,6 +96,9 @@ public abstract class EarthquakeMarker extends SimplePointMarker {
         // reset to previous styling
         pg.popStyle();
 
+        this.pixel_cor_x = x;
+        this.pixel_cor_y = y;
+
     }
 
     // determine color of marker from depth
@@ -100,10 +107,10 @@ public abstract class EarthquakeMarker extends SimplePointMarker {
     // You might find the getters below helpful.
     private void colorDetermine(PGraphics pg) {
         //TODO: Implement this method
-        if (this.magnitude < 4.0) {
+        if (this.depth <= 70) {
             pg.fill(0, 0, 255);
         } else {
-            if (this.magnitude <= 4.9) {
+            if (this.depth <= 300) {
                 pg.fill(255, 255, 0);
             } else {
                 pg.fill(255, 0, 0);
@@ -136,6 +143,15 @@ public abstract class EarthquakeMarker extends SimplePointMarker {
 
     public boolean isOnLand() {
         return isOnLand;
+    }
+
+    public boolean isInside(float mouseX, float mouseY) {
+        float dis = (float) Math.sqrt((mouseX - pixel_cor_x) * (mouseX - pixel_cor_x) + (mouseY - pixel_cor_y) * (mouseY - pixel_cor_y));
+        if (dis <= radius) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
