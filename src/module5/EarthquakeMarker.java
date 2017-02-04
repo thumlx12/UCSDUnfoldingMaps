@@ -2,7 +2,10 @@ package module5;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.PointFeature;
+import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import processing.core.PGraphics;
+
+import java.util.List;
 
 /**
  * Implements a visual marker for earthquakes on an earthquake map
@@ -11,6 +14,8 @@ import processing.core.PGraphics;
  * @author Your name here
  */
 public abstract class EarthquakeMarker extends CommonMarker {
+    private final int markerType = 1;
+    private List<ScreenPosition> affectedCities;
 
     // Did the earthquake occur on land?  This will be set by the subclasses.
     protected boolean isOnLand;
@@ -90,6 +95,12 @@ public abstract class EarthquakeMarker extends CommonMarker {
                     y - (radius + buffer));
 
         }
+//        if (clicked) {
+//            pg.fill(255, 0, 0);
+//            for (ScreenPosition city : affectedCities) {
+//                pg.line(x, y, city.x, city.y);
+//            }
+//        }
 
         // reset to previous styling
         pg.popStyle();
@@ -109,7 +120,7 @@ public abstract class EarthquakeMarker extends CommonMarker {
         pg.fill(0);
         pg.textSize(12);
         pg.textAlign(37, 39);
-        pg.text(getTitle(), x + this.radius, y);
+        pg.text(getTitle(), x + this.radius + 2, y);
         pg.popStyle();
     }
 
@@ -159,12 +170,20 @@ public abstract class EarthquakeMarker extends CommonMarker {
 
     }
 
+    public int getMarkerType() {
+        return this.markerType;
+    }
+
     public float getRadius() {
         return Float.parseFloat(getProperty("radius").toString());
     }
 
     public boolean isOnLand() {
         return isOnLand;
+    }
+
+    public void setAffectedCities(List<ScreenPosition> cities) {
+        this.affectedCities = cities;
     }
 
 }

@@ -11,7 +11,7 @@
 {"type":"Feature","properties":{"name":"Sydney", "population":"4.84", "country" : "Australia", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[151.2094, -33.8650]}},
 {"type":"Feature","properties":{"name":"Prague", "population":"1.26", "country" : "Czech Republic", "coastal" : "false"},"geometry":{"type":"Point","coordinates":[14.4167, 50.0833]}},
 {"type":"Feature","properties":{"name":"Cape Town", "population":"0.43", "country" : "South Africa", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[18.4239, -33.9253]}},
-{"type":"Feature","properties":{"name":"Taipei", "population":"2.70", "country" : "Taiwan", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[121.6333, 25.0333]}},
+{"type":"Feature","properties":{"name":"Taipei", "population":"2.70", "country" : "China", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[121.6333, 25.0333]}},
 {"type":"Feature","properties":{"name":"Hong Kong", "population":"7.23", "country" : "China", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[114.1747, 22.2783]}},
 {"type":"Feature","properties":{"name":"Shanghai", "population":"24.26", "country" : "China", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[121.5000, 31.2000]}},
 {"type":"Feature","properties":{"name":"San Juan", "population":"0.39", "country" : "Puerto Rico", "coastal" : "true"},"geometry":{"type":"Point","coordinates":[-66.0667, 18.4500]}},

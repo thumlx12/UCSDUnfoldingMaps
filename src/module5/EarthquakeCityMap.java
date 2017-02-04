@@ -1,5 +1,6 @@
 package module5;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
 import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.utils.MapUtils;
+import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import parsing.ParseFeed;
 import processing.core.PApplet;
 
@@ -67,6 +69,8 @@ public class EarthquakeCityMap extends PApplet {
     private CommonMarker lastSelected;
     private CommonMarker lastClicked;
 
+    private List<CommonMarker> affectedCities;
+
     public void setup() {
         // (1) Initializing canvas and map tiles
         size(1500, 768, OPENGL);
@@ -89,6 +93,7 @@ public class EarthquakeCityMap extends PApplet {
         //     STEP 2: read in city data
         List<Feature> cities = GeoJSONReader.loadData(this, cityFile);
         cityMarkers = new ArrayList<CommonMarker>();
+        affectedCities = new ArrayList<CommonMarker>();
         for (Feature city : cities) {
             cityMarkers.add(new CityMarker(city));
         }
@@ -126,7 +131,7 @@ public class EarthquakeCityMap extends PApplet {
         background(0);
         map.draw();
         addKey();
-
+        drawAffectLines();
     }
 
     public void keyPressed() {
@@ -148,7 +153,31 @@ public class EarthquakeCityMap extends PApplet {
 
         }
         selectMarkerIfHover(cityMarkers, quakeMarkers);
-        //selectMarkerIfHover();
+    }
+
+    /**
+     * The event handler for mouse clicks
+     * It will display an earthquake and its threat circle of cities
+     * Or if a city is clicked, it will display all the earthquakes
+     * where the city is in the threat circle
+     */
+    @Override
+    public void mouseClicked() {
+        // TODO: Implement this method
+        // Hint: You probably want a helper method or two to keep this code
+        // from getting too long/disorganized
+
+        if (lastClicked != null) {
+            lastClicked.setClicked(false);
+            lastClicked = null;
+            unhideMarkers();
+            affectedCities.clear();
+        } else {
+            if (selectMarkerIfClick(cityMarkers, quakeMarkers)) {
+                hideMarkers();
+            }
+        }
+
     }
 
     // If there is a marker under the cursor, and lastSelected is null
@@ -169,20 +198,53 @@ public class EarthquakeCityMap extends PApplet {
         }
     }
 
-
-    /**
-     * The event handler for mouse clicks
-     * It will display an earthquake and its threat circle of cities
-     * Or if a city is clicked, it will display all the earthquakes
-     * where the city is in the threat circle
-     */
-    @Override
-    public void mouseClicked() {
+    private boolean selectMarkerIfClick(List<CommonMarker>... markers) {
         // TODO: Implement this method
-        // Hint: You probably want a helper method or two to keep this code
-        // from getting too long/disorganized
+        for (List<CommonMarker> markerlist : markers) {
+            for (CommonMarker marker : markerlist) {
+                if (marker.isInside(map, (float) mouseX, (float) mouseY)) {
+                    lastClicked = marker;
+                    marker.setClicked(true);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
+
+    private void hideMarkers() {
+        for (Marker marker : quakeMarkers) {
+            marker.setHidden(true);
+        }
+
+        for (Marker marker : cityMarkers) {
+            marker.setHidden(true);
+        }
+        lastClicked.setHidden(false);
+        //String lastClickedClass = lastClicked.getClass().toString();
+        if (lastClicked.getMarkerType() == 0) {
+            for (CommonMarker quake : quakeMarkers) {
+                double threatRadius = ((EarthquakeMarker) quake).threatCircle();
+                double dis = getDisFromTwoPosition(lastClicked.getLocation(), quake.getLocation());
+                if (dis <= threatRadius) {
+                    quake.setHidden(false);
+                }
+            }
+        } else {
+
+            double threatRadius = ((EarthquakeMarker) lastClicked).threatCircle();
+            for (CommonMarker city : cityMarkers) {
+                double dis = getDisFromTwoPosition(lastClicked.getLocation(), city.getLocation());
+                if (dis <= threatRadius) {
+                    city.setHidden(false);
+                    //ScreenPosition sp = map.getScreenPosition(city.getLocation());
+                    affectedCities.add(city);
+                }
+            }
+            //((EarthquakeMarker) lastClicked).setAffectedCities(affectedCities);
+        }
+    }
 
     // loop over and unhide all markers
     private void unhideMarkers() {
@@ -193,6 +255,20 @@ public class EarthquakeCityMap extends PApplet {
         for (Marker marker : cityMarkers) {
             marker.setHidden(false);
         }
+    }
+
+    public static double getDisFromTwoPosition(Location A, Location B) {
+        double MLatA = A.getLat() * Math.PI / 180;
+        double MLatB = B.getLat() * Math.PI / 180;
+        double MLonA = A.getLon() * Math.PI / 180;
+        double MLonB = B.getLon() * Math.PI / 180;
+        double tmp_a = MLatA - MLatB;
+        double tmp_b = MLonA - MLonB;
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(tmp_a / 2), 2) +
+                Math.cos(MLatA) * Math.cos(MLatB) * Math.pow(Math.sin(tmp_b / 2), 2)));
+        s = s * 6378.137;// EARTH_RADIUS;
+        s = Math.round(s * 10000) / 10000;
+        return s;
     }
 
     // helper method to draw key in GUI
@@ -258,6 +334,17 @@ public class EarthquakeCityMap extends PApplet {
 
     }
 
+    private void drawAffectLines() {
+        if (lastClicked != null) {
+            stroke(209, 108, 8);
+            strokeWeight(1);
+            ScreenPosition lastClickedPos = map.getScreenPosition(lastClicked.getLocation());
+            for (CommonMarker affectedCity : affectedCities) {
+                ScreenPosition city_sp = map.getScreenPosition(affectedCity.getLocation());
+                line(lastClickedPos.x, lastClickedPos.y, city_sp.x, city_sp.y);
+            }
+        }
+    }
 
     // Checks whether this quake occurred on land.  If it did, it sets the
     // "country" property of its PointFeature to the country where it occurred
